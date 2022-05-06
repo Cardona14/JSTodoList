@@ -1,33 +1,40 @@
-import AddTodo from './components/add-todo.js';
+import addToDo from "./components/add-Todo.js";
 
-export default class view{
-    constructor(){
+export default class View {
+    constructor() {
         this.model = null;
         this.table = document.getElementById('table');
-        this.addTodoForm = new AddTodo();
-        this.addTodoForm.onClick((title, description) => this.addTodo(title, description));
+        this.addTodoform = new addToDo();
+
+        this.addTodoform.onClick((title, description) => this.addTodo(title, description));
     }
 
-    setModel(model){
+    setModel(model) {
         this.model = model;
     }
 
-    addTodo(title, description){
+    render() {
+        const todos = this.model.getTodos();
+        for (const todo of todos) {
+            this.createRow(todo);
+        }
+    }
+
+    addTodo(title, description) {
         const todo = this.model.addTodo(title, description);
         this.createRow(todo);
     }
 
-    toggleCompleted(id){
+    togglecompleted(id) {
         this.model.toggleCompleted(id);
     }
 
-    removeTodo(id){
+    removeTodo(id) {
         this.model.removeTodo(id);
         document.getElementById(id).remove();
-        
     }
-    
-    createRow(todo){
+
+    createRow(todo) {
         const row = table.insertRow();
         row.setAttribute('id', todo.id);
         row.innerHTML = `
@@ -46,12 +53,13 @@ export default class view{
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = todo.completed;
-        checkbox.onclick = () => this.toggleCompleted(todo.id);
+        checkbox.onclick = () => this.togglecompleted(todo.id);
         row.children[2].appendChild(checkbox);
-        const removeBtn = document.createElement('button');
-        removeBtn.classList.add('btn', 'btn-danger', 'mb-1', 'ml-1');
-        removeBtn.innerHTML = '<i class="fa fa-trash"></i>';
-        removeBtn.onclick = () => this.removeTodo(row.getAttribute(todo.id));
-        row.children[3].appendChild(removeBtn);
+
+        const removebtn = document.createElement('button');
+        removebtn.classList.add('btn', 'btn-danger', 'mb-1', 'ml-1');
+        removebtn.innerHTML = '<i class="fa fa-trash"></i>';
+        removebtn.onclick = () => this.removeTodo(todo.id);
+        row.children[3].appendChild(removebtn);
     }
 }
